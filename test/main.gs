@@ -17,4 +17,6 @@ proc main {
         tzm: 0,
     };
     assert_eq dt_str(dt), "2025-09-27T11:27:47.459000+01:00";
+
+    assert_eq dt_get_weekday(DT_NOW()), CURRENT_WEEKDAY();
 }
