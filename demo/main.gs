@@ -4,5 +4,8 @@ costumes "blank.svg";
 
 onflag {main;}
 proc main {
-    say dt_str(DT_NOW());
+    local datetime d = DT_NOW();
+    say dt_str(d);
+
+    say dt_get_weekday_number(d);
 }

@@ -1,5 +1,7 @@
 # Struct definition and constructors
 
+# also serves the same role as python's datetime.date
+# Gregorian date
 struct datetime {
     year = 1970,
     month = 1,
