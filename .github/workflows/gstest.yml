@@ -17,6 +17,7 @@ jobs:
       
     steps:      
     - uses: actions/checkout@v4
-    - uses: inflated-goboscript/gstest@v0.1.4
+    - uses: inflated-goboscript/gstest@v0.1.5
       with:
         token: ${{ secrets.GH_VIEW_TOKEN }}
+        suffix: "-i arg"

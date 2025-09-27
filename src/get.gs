@@ -13,12 +13,11 @@ list DT_WEEKDAYS = [
 # Get the day of the week for a date `$d`
 # https://www.geeksforgeeks.org/dsa/zellers-congruence-find-day-date/
 func dt_get_weekday_number(datetime d) {
-    # 0 = Saturday, 1 = Sunday, 2 = Monday, ..., 6 = Friday
-    # uses zeller's rule
-    local q = $d.day;
-    local m = $d.month;
-    local K = $d.year % 100;
-    local J = $d.year // 100;
-
-    return floor(q + (13*(m+1))/5 + K + K/4 + J/4 + 5*J) % 7;
+    # uses zeller's rule but offset to match the DT_WEEKDAYS list
+    return 1 + floor(
+        $d.day + 
+        (13 / 5) * ($d.month + 1) +
+        1.25 * ($d.year % 100) +
+        5.25 * ($d.year // 100)
+        -2) % 7;
 }
