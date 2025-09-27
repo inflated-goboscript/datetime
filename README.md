@@ -11,15 +11,15 @@ It is designed to be used with [inflator](https://github.com/inflated-goboscript
 
 ## Installation
 
-Make sure you have inflator installed
+Make sure you have inflator installed. It's installable from the gtp.
 
-`inflate install https://github.com/inflated-goboscript/datetime`
+`inflate install datetime`
 
 add datetime to your `inflator.toml` config:
 ```toml
 [dependencies]
 # ...
-datetime = "https://github.com/inflated-goboscript/datetime"
+datetime = "datetime"
 ```
 
 ## Development
