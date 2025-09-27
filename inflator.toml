@@ -4,3 +4,4 @@ version = "v0.0.0"
 username = "inflated-goboscript"
 
 [dependencies]
+time = "time"
