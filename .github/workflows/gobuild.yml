@@ -3,9 +3,9 @@ name: Build
 
 on:
   pull_request:
-    branches: ['main']
+    branches: ['main', 'master']
   push:
-    branches: ['main']
+    branches: ['main', 'master']
   release:
     types: [prereleased, published]
   workflow_dispatch:
