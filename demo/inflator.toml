@@ -1,0 +1,6 @@
+# inflator.toml syntax documentation: https://github.com/inflated-goboscript/inflator#inflator
+name = "test"
+username = "inflated-goboscript"
+
+[dependencies]
+datetime = ".."

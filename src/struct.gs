@@ -12,7 +12,7 @@ struct datetime {
     tzm=0 # timezone minute. If tzh is null, ignore tzm, so default is "00"
 }
 
-%define DATETIME_NOW() datetime{ \
+%define DT_NOW() datetime{ \
     year: current_year(), \
     month: current_month(), \
     day: current_date(), \
