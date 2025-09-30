@@ -25,6 +25,19 @@ struct datetime {
     tzh: TIMEZONE(),\
     tzm: 0}
 
+enum _dt_from_isoformat_part {
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second,
+    microsecond,
+    tzh,
+    tzm,
+    done
+}
+
 func dt_from_isoformat(isoformat) datetime {
     # requires YYYY-MM-DD
     # if you want time, add T & hh:mm:ss
@@ -45,79 +58,79 @@ func dt_from_isoformat(isoformat) datetime {
 
     local i = 0;
     local token = "";
-    local part = "year";
+    local part = _dt_from_isoformat_part.year;
     # include an empty character too as a signal that it's the end.
     repeat length $isoformat + 1 {
         i++;
         local c = $isoformat[i];
-        if part == "year" {
+        if part == _dt_from_isoformat_part.year {
             if c == "-" {
                 local year = token;
                 token = "";
-                part = "month";
+                part = _dt_from_isoformat_part.month;
             } else {
                 token &= c;
             }
-        } elif part == "month" {
+        } elif part == _dt_from_isoformat_part.month {
             if c == "-" {
                 local month = token;
                 token = "";
-                part = "day";
+                part = _dt_from_isoformat_part.day;
             } else {
                 token &= c;
             }
-        } elif part == "day" {
+        } elif part == _dt_from_isoformat_part.day {
             if c == "T" {
                 local day = token;
                 token = "";
-                part = "hour";
+                part = _dt_from_isoformat_part.hour;
             } elif c in "+-Z" {
                 # or end of string
                 local day = token;
                 token = c;
-                part = "tzh";
+                part = _dt_from_isoformat_part.tzh;
             } else {
                 token &= c;
             }
-        } elif part == "hour" {
+        } elif part == _dt_from_isoformat_part.hour {
             if c == ":" {
                 local hour = token;
                 token = "";
-                part = "minute";
+                part = _dt_from_isoformat_part.minute;
             } else {
                 token &= c;
             }
-        } elif part == "minute" {
+        } elif part == _dt_from_isoformat_part.minute {
             if c == ":" {
                 local minute = token;
                 token = "";
-                part = "second";
+                part = _dt_from_isoformat_part.second;
             } else {
                 token &= c;
             }
-        } elif part == "second" {
+        } elif part == _dt_from_isoformat_part.second {
             if c == "." {
                 local second = token;
                 token = "";
-                part = "microsecond";
+                part = _dt_from_isoformat_part.microsecond;
             } elif c in "+-Z" {
                 # or end of string
                 local second = token;
                 token = c;
-                part = "tzh";
+                part = _dt_from_isoformat_part.tzh;
             } else {
                 token &= c;
             }
-        } elif part == "microsecond" {
+        } elif part == _dt_from_isoformat_part.microsecond {
             if c in "+-Z" {
                 # or end of string
                 local microsecond = token;
                 token = c;
-                part = "tzh";
+                part = _dt_from_isoformat_part.tzh;
             } else {
                 token &= c;
             }
-        } elif part == "tzh" {
+        } elif part == _dt_from_isoformat_part.tzh {
             if token == "Z" {
                 local tzh = 0;
                 local tzm = 0;
@@ -129,11 +142,11 @@ func dt_from_isoformat(isoformat) datetime {
             if c == ":" {
                 local tzh = token;
                 token = "";
-                part = "tzm";
+                part = _dt_from_isoformat_part.tzm;
             } else {
                 token &= c;
             }
-        } elif part == "tzm" {
+        } elif part == _dt_from_isoformat_part.tzm {
             if c == "" {
                 local tzm = token;
             } else {
