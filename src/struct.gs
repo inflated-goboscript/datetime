@@ -182,3 +182,31 @@ func dt_from_isoformat(isoformat) datetime {
         tzm: tzm
     };
 }
+
+func dt_from_julian_timestamp(j) datetime {
+    local y = 4716;
+    local v = 3;
+    local j = 1401;
+    local u = 5;
+    local m = 2;
+    local s = 153;
+    local n = 12;
+    local w = 2;
+    local r = 4;
+    local B = 274277;
+    local p = 1461;
+    local C = -38;
+
+    local f = $j + j + (((4 * $j + B) // 146097) * 3) // 4 + C;
+    local e = r * f + v;
+    local g = (e % p) // r;
+    local h = u * g + w;
+    local D = (h % s) // u + 1;
+    local M = (h // s + m) % n + 1;
+    local Y = e // p - y + (n + m - M) // n;
+
+    log Y;
+    log M;
+    log D;
+
+}
