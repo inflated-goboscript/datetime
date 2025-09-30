@@ -184,34 +184,11 @@ func dt_from_isoformat(isoformat) datetime {
 }
 
 func dt_from_julian_timestamp(j) datetime {
-    local y = 4716;
-    local v = 3;
-    local j = 1401;
-    local u = 5;
-    local m = 2;
-    local s = 153;
-    local n = 12;
-    local w = 2;
-    local r = 4;
-    local B = 274277;
-    local p = 1461;
-    local C = -38;
-
-    local f = $j + j + (((4 * $j + B) // 146097) * 3) // 4 + C;
-    local e = r * f + v;
-    local g = (e % p) // r;
-    local h = u * g + w;
-    local D = (h % s) // u + 1;
-    local M = (h // s + m) % n + 1;
-    local Y = e // p - y + (n + m - M) // n;
-
-    log Y;
-    log M;
-    log D;
-
+    # convert to unix timestamp, then load that
+    return dt_from_timestamp(86400 * ($j - 2440587.5));
 }
 
-# [2025,9,30,14,21,20,100]
+# Create a datetime struct from a UNIX timestamp
 func dt_from_timestamp(t) datetime {
     # year/month/day
     local value = $t // 86400;
@@ -235,8 +212,7 @@ func dt_from_timestamp(t) datetime {
     value -= c6;
 
     # local c7 = value;
-    # just use value directly
-
+    # just use value directly for microseconds
     return datetime {
         year: c1 + 1970,
         month: c2 + 1,

@@ -23,7 +23,8 @@ proc main {
     log dt_to_julian_timestamp(dt);
     log dt_to_timestamp(dt);
 
-    datetime d = dt_from_timestamp(1759242080.0001);
+    datetime d = dt_from_timestamp(1758968867.459);
     log dt_to_isoformat(d);
-    # datetime d = dt_from_julian_timestamp(2460945.9776326274);
+    datetime d = dt_from_julian_timestamp(2460945.935965961);
+    log dt_to_isoformat(d);
 }

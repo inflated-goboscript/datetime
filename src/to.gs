@@ -39,6 +39,7 @@ func dt_to_isoformat(datetime dt) {
 # https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_calendar_date_to_Julian_day_number
 # https://www.desmos.com/calculator/kzbktf0riu
 func dt_to_julian_timestamp(datetime dt) {
+    # you could also do unixTimeStamp / 86400 + 2440587.5
     return floor(1721455.25 + 365.2425 * ($dt.year + ($dt.month - 14) / 12)) + $dt.day + (
         ($dt.hour - $dt.tzh) - 12 + (
             ($dt.minute - $dt.tzm)  + (
