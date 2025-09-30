@@ -1,7 +1,12 @@
 # convert datetimes to other formats
 
+# string representation of datetime (iso format)
 func dt_str(datetime dt) {
     local suffix = "";
+    if $dt.hour != "null" {
+        suffix &= "T" & zfill($dt.hour, 2) & ":" & zfill($dt.minute, 2) & ":" & zfill($dt.second, 2);
+    }
+
     if $dt.microsecond != 0 {
         # add microseconds if applicable
         # according to the Wikipedia page: There is no limit on the number of decimal places for the decimal fraction
@@ -22,7 +27,5 @@ func dt_str(datetime dt) {
         }
     }
     
-    return $dt.year & "-" & zfill($dt.month, 2) & "-" & zfill($dt.day, 2) &
-        "T" & zfill($dt.hour, 2) & ":" & zfill($dt.minute, 2) & ":" & zfill($dt.second, 2) &
-        suffix;
+    return $dt.year & "-" & zfill($dt.month, 2) & "-" & zfill($dt.day, 2) & suffix;
 }

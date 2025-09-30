@@ -6,7 +6,7 @@ struct datetime {
     year = 1970,
     month = 1,
     day = 1,
-    hour = 0,
+    hour = 0, # either hour or "null". If null, implies no minutes or seconds, and no microseconds.
     minute = 0,
     second = 0,
     microsecond = 0,
@@ -26,94 +26,131 @@ struct datetime {
     tzm: 0}
 
 func dt_from_isoformat(isoformat) datetime {
-    split $isoformat, "-";
-    assert length split > 2, "splitlen2";
+    # requires YYYY-MM-DD
+    # if you want time, add T & hh:mm:ss
+        # if you want seconds fraction, add . & ms
+    # if you want tz, add Z (utc) OR (+ OR - & HH:MM)
+
+    # possible ends: day, second, ms, tzm, tzh (z)
     
-    local year = split[1];
-    local month = split[2];
+    local year = 1970;
+    local month = 1;
+    local day = 1;
+    local hour = "null";
+    local minute = 0;
+    local second = 0;
+    local microsecond = 0;
+    local tzh = "null";
+    local tzm = 0;
 
-    local s3 = split[3];
-    if length split > 3 {
-        assert_eq length split, 4;
-        s3 &= "-" & split[4];
-    }
-
-    local t_split = findchar(s3, "T");
-    log s3;
-    log t_split;
-    if t_split == 0 {
-        # no extra data
-        local day = s3;
-        
-        local hour = 0;
-        local minute = 0;
-        local second = 0;
-        local microsecond = 0;
-        local tzh = 0;
-        local tzm = 0;
-    } else {
-        local day = slice(split[3], 1, t_split);
-        local time_data = slice(split[3], t_split+1, length split[3] + 1);
-        log time_data;
-
-        split time_data, ":";
-        assert length split > 2, "splitlen1";
-        
-        local hour = split[1];
-        local minute = split[2];
-        
-        local final_portion = split[3];
-        if length split > 3 {
-            assert_eq length split, 4, "splitlen2";
-            final_portion &= ":" & split[4];
-        }
-
-        log final_portion;
-
-        # final portion is in format ss.mmmmmm (+OR- hh:mm)OR-Z
-        if final_portion[length final_portion] == "Z" {
-            local s_split = length final_portion;
-        } else {
-            local s_split = findchar(final_portion, "+");
-            if s_split == 0 {
-                s_split = findchar(final_portion, "-");
+    local i = 0;
+    local token = "";
+    local part = "year";
+    # include an empty character too as a signal that it's the end.
+    repeat length $isoformat + 1 {
+        i++;
+        local c = $isoformat[i];
+        if part == "year" {
+            if c == "-" {
+                local year = token;
+                token = "";
+                part = "month";
+            } else {
+                token &= c;
             }
-        }
-
-        if s_split == 0 {
-            # no timezone information
-            local seconds_portion = final_portion;
-            local tzh = "null";
-            local tzm = 0;
-        } else {
-            # there is timezone information. parse it.
-            local seconds_portion = slice(final_portion, 1, s_split);
-            local tz_portion = slice(final_portion, s_split, length final_portion + 1);
-
-            if tz_portion == "Z" {
+        } elif part == "month" {
+            if c == "-" {
+                local month = token;
+                token = "";
+                part = "day";
+            } else {
+                token &= c;
+            }
+        } elif part == "day" {
+            if c == "T" {
+                local day = token;
+                token = "";
+                part = "hour";
+            } elif c in "+-Z" {
+                # or end of string
+                local day = token;
+                token = c;
+                part = "tzh";
+            } else {
+                token &= c;
+            }
+        } elif part == "hour" {
+            if c == ":" {
+                local hour = token;
+                token = "";
+                part = "minute";
+            } else {
+                token &= c;
+            }
+        } elif part == "minute" {
+            if c == ":" {
+                local minute = token;
+                token = "";
+                part = "second";
+            } else {
+                token &= c;
+            }
+        } elif part == "second" {
+            if c == "." {
+                local second = token;
+                token = "";
+                part = "microsecond";
+            } elif c in "+-Z" {
+                # or end of string
+                local second = token;
+                token = c;
+                part = "tzh";
+            } else {
+                token &= c;
+            }
+        } elif part == "microsecond" {
+            if c in "+-Z" {
+                # or end of string
+                local microsecond = token;
+                token = c;
+                part = "tzh";
+            } else {
+                token &= c;
+            }
+        } elif part == "tzh" {
+            if token == "Z" {
                 local tzh = 0;
                 local tzm = 0;
-            } else {
-                split tz_portion, ":";
-                local tzh = split[1];
-                local tzm = split[2];
-
-                if tzh[1] == "+" {
-                    tzh = slice(tzh, 2, length tzh + 1);
-                }
+                part = "done";
+            } elif token == "+" {
+                token = "";
             }
 
+            if c == ":" {
+                local tzh = token;
+                token = "";
+                part = "tzm";
+            } else {
+                token &= c;
+            }
+        } elif part == "tzm" {
+            if c == "" {
+                local tzm = token;
+            } else {
+                token &= c;
+            }
         }
-
-        # parse seconds portion
     }
-    log "Out";
-    log year;
-    log month;
-    log day;
-    log hour;
-    log minute;
-    log seconds_portion;
-    log tzh;
-    log tzm;
+
+    return datetime{
+        year: year,
+        month: month,
+        day: day,
+        hour: hour,
+        minute: minute,
+        second: second,
+        microsecond: microsecond,
+        tzh: tzh,
+        tzm: tzm
+    };
 }
