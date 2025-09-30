@@ -3,13 +3,13 @@ costumes "blank.svg";
 %include inflator/datetime
 
 onflag {main;}
-proc main {
+nowarp proc main {
     local datetime d = DT_NOW();
-    say dt_to_isoformat(d);
+    out = dt_to_isoformat(d);
 
     forever {
-        ask "ISO format string:";
+        ask out & "\n ISO format string:";
         datetime d = dt_from_isoformat(answer());
-        say dt_str(d);
+        out = dt_str(d);
     }
 }
