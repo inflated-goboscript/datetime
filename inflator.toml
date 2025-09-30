@@ -6,5 +6,3 @@ username = "inflated-goboscript"
 [dependencies]
 time = "time"
 string = "string"
-assert = "assert"
-math = "math"
