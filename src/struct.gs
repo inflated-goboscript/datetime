@@ -220,6 +220,6 @@ func dt_from_timestamp(t) datetime {
         hour: c4,
         minute: c5,
         second: c6,
-        microsecond: value
+        microsecond: value * 1000000
     };
 }
