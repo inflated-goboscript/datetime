@@ -1,7 +1,13 @@
 # convert datetimes to other formats
 
-# string representation of datetime (iso format)
 func dt_str(datetime dt) {
+    return "datetime{year:"&$dt.year&",month:"&$dt.month&",day:"&$dt.day
+        &",hour:"&$dt.hour&",minute:"&$dt.minute&",second:"&$dt.second&",microsecond:"&$dt.microsecond
+        &",tzh:"&$dt.tzh&",tzm:"&$dt.tzm&"}";
+}
+
+# iso format string representation of datetime
+func dt_to_isoformat(datetime dt) {
     local suffix = "";
     if $dt.hour != "null" {
         suffix &= "T" & zfill($dt.hour, 2) & ":" & zfill($dt.minute, 2) & ":" & zfill($dt.second, 2);
