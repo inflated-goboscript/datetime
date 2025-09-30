@@ -27,4 +27,6 @@ proc main {
     assert_eq dt_to_julian_timestamp(dt), 2460945.935965961;
     assert_eq dt_to_timestamp(dt), 1758968867.459;
     log dt_str(dt);
+
+    log td_str(dt_sub(dt, dt_from_isoformat("2025-09-25T12:20:30.123456+01:00")));
 }
