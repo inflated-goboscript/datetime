@@ -210,3 +210,40 @@ func dt_from_julian_timestamp(j) datetime {
     log D;
 
 }
+
+# [2025,9,30,14,21,20,100]
+func dt_from_timestamp(t) datetime {
+    # year/month/day
+    local value = $t // 86400;
+    local c1 = value // 365.2425;
+    value -= 365.2425 * c1;
+
+    local c2 = value // 30.436875;
+    value -= 30.436875 * c2;
+
+    local c3 = floor(value);
+
+    # hour/mins/secs/micro
+    value = $t % 86400;
+    local c4 = value // 3600;
+    value -= 3600 * c4;
+    
+    local c5 = value // 60;
+    value -= 60 * c5;
+
+    local c6 = floor(value);
+    value -= c6;
+
+    # local c7 = value;
+    # just use value directly
+
+    return datetime {
+        year: c1 + 1970,
+        month: c2 + 1,
+        day: c3 + 1,
+        hour: c4,
+        minute: c5,
+        second: c6,
+        microsecond: value
+    };
+}
