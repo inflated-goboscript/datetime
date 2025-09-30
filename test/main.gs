@@ -19,7 +19,4 @@ proc main {
     assert_eq dt_to_isoformat(dt), "2025-09-27T11:27:47.459000+01:00";
 
     assert_eq dt_get_weekday(DT_NOW()), CURRENT_WEEKDAY();
-
-    datetime d = dt_from_isoformat("2025-09-27Z");
-    log dt_str(d);
 }

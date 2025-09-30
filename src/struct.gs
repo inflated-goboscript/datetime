@@ -64,7 +64,17 @@ func dt_from_isoformat(isoformat) datetime {
         i++;
         local c = $isoformat[i];
         if part == _dt_from_isoformat_part.year {
-            if c == "-" {
+            if length token == 8 {
+                # if the token is 8 chars long, its the YYYYMMDD format.
+                local year = token[1] & token[2] & token[3] & token[4];
+                local month = token[5] & token[6];
+                local day = token[7] & token[8];
+
+                # we'll just ignore the current char and now send to the hour handler
+                part = _dt_from_isoformat_part.hour;
+                token = "";
+
+            } elif c == "-" {
                 local year = token;
                 token = "";
                 part = _dt_from_isoformat_part.month;
@@ -105,6 +115,11 @@ func dt_from_isoformat(isoformat) datetime {
                 local minute = token;
                 token = "";
                 part = _dt_from_isoformat_part.second;
+            } elif c in "+-Z" {
+                # or end of string
+                local minute = token;
+                token = c;
+                part = _dt_from_isoformat_part.tzh;
             } else {
                 token &= c;
             }
