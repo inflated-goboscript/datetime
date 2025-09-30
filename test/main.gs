@@ -21,6 +21,8 @@ proc main {
     assert_eq dt_get_weekday(DT_NOW()), CURRENT_WEEKDAY();
 
     log dt_to_julian_timestamp(dt);
+    log dt_to_timestamp(dt);
 
-    datetime d = dt_from_julian_timestamp(2460945.9776326274);
+    # datetime d = dt_from_julian_timestamp(2460945.9776326274);
+
 }

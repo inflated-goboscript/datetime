@@ -37,10 +37,25 @@ func dt_to_isoformat(datetime dt) {
 }
 
 # https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_calendar_date_to_Julian_day_number
+# https://www.desmos.com/calculator/kzbktf0riu
 func dt_to_julian_timestamp(datetime dt) {
-    local day_number = floor((1461 * ($dt.year + 4800 + ($dt.month-14)/12) - 3 * ($dt.year + 4900 + ($dt.month-14)/12)/100) / 4
-        + 367/12 * ($dt.month - 2 - ($dt.month-14))
-        + $dt.day - 32075);
+    return floor(1721455.25 + 365.2425 * ($dt.year + ($dt.month - 14) / 12)) + $dt.day + (
+        ($dt.hour - $dt.tzh) - 12 + (
+            ($dt.minute - $dt.tzm)  + (
+                $dt.second + (
+                    $dt.microsecond
+                ) / 1000000
+            ) / 60
+        ) / 60
+    ) / 24;
+}
 
-    return day_number + ($dt.hour - 12) / 24 + $dt.minute/1440 + ($dt.second + $dt.microsecond / 1000000)/86400;
+# https://www.desmos.com/calculator/kzbktf0riu
+func dt_to_timestamp(datetime dt) {
+    # note, 1 - "null" = 1, so we can just subtract the timezone offset
+    return 86400 * floor($dt.day - 719558.86625 + 365.2425 * ($dt.year + $dt.month / 12))
+        + 3600 * ($dt.hour - $dt.tzh) 
+        + 60 * ($dt.minute - $dt.tzm) 
+        + $dt.second 
+        + 0.000001 * $dt.microsecond;
 }
