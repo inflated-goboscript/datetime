@@ -10,6 +10,6 @@ nowarp proc main {
     forever {
         ask out & "\n ISO format string:";
         datetime d = dt_from_isoformat(answer());
-        out = dt_str(d);
+        out = dt_to_timestamp(d);
     }
 }

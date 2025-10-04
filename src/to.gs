@@ -52,10 +52,18 @@ func dt_to_julian_timestamp(datetime dt) {
 }
 
 # https://www.desmos.com/calculator/kzbktf0riu
+# https://www.desmos.com/calculator/wsobrisfvo
+# https://scratch.mit.edu/projects/1224997334/
 func dt_to_timestamp(datetime dt) {
+    local y = $dt.year - ($dt.month < 3);
+
     # note, 1 - "null" = 1, so we can just subtract the timezone offset
-    return 86400 * floor($dt.day - 719558.86625 + 365.2425 * ($dt.year + $dt.month / 12))
-        + 3600 * ($dt.hour - $dt.tzh) 
+    return 86400 * (
+            365 * ($dt.year - 1970) + _DT_YEAR_OFFSET(y)
+            + _dt_month_day_index[$dt.month]
+            + $dt.day - 1
+        )
+        + 3600 * ($dt.hour - $dt.tzh)
         + 60 * ($dt.minute - $dt.tzm) 
         + $dt.second 
         + 0.000001 * $dt.microsecond;

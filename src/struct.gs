@@ -189,37 +189,42 @@ func dt_from_julian_timestamp(j) datetime {
 }
 
 # Create a datetime struct from a UNIX timestamp
+# https://scratch.mit.edu/projects/1224997334/
 func dt_from_timestamp(t) datetime {
-    # year/month/day
-    local value = $t // 86400;
-    local c1 = value // 365.2425;
-    value -= 365.2425 * c1;
+    local value = $t % 86400;
 
-    local c2 = value // 30.436875;
-    value -= 30.436875 * c2;
+    local hour = value // 3600;
+    value -= 3600 * hour;
 
-    local c3 = floor(value);
+    local minute = value // 60;
+    value -= 60 * minute;
 
-    # hour/mins/secs/micro
-    value = $t % 86400;
-    local c4 = value // 3600;
-    value -= 3600 * c4;
-    
-    local c5 = value // 60;
-    value -= 60 * c5;
+    local second = floor(value);
+    local microsecond = 1000000 * (value - second);
 
-    local c6 = floor(value);
-    value -= c6;
+    # get y/m/d
+    value = $t // 86400;
+    local year = value // 365;
+    value -= 365 * year;
+    year += 1970;
 
-    # local c7 = value;
-    # just use value directly for microseconds
-    return datetime {
-        year: c1 + 1970,
-        month: c2 + 1,
-        day: c3 + 1,
-        hour: c4,
-        minute: c5,
-        second: c6,
-        microsecond: value * 1000000
-    };
+    local month = 12;
+    repeat 12 {
+        local y = year - (month < 3);
+        local day = 1 + value - _dt_month_day_index[month] - _DT_YEAR_OFFSET(y);
+        if day > 0 {
+            return datetime{
+                year: year,
+                month: month,
+                day: day,
+                hour: hour,
+                minute: minute,
+                second: second,
+                microsecond: microsecond
+            };
+        }
+        month--;
+    }
+    error "invalid timestamp " & $t & " - draft an issue on gh: https://github.com/inflated-goboscript/datetime/issues";
+    breakpoint;
 }
